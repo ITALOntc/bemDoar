@@ -12,7 +12,13 @@ import NecessidadeFormPage from './paginas/necessidades/NecessidadeFormPage'
 
 import CategoriaListaPage from './paginas/categorias/CategoriaListaPage'
 import CategoriaFormPage from './paginas/categorias/CategoriaFormPage'
-import { ListaModulo, FormModulo, OportunidadeDetalhe, MinhasCandidaturas, MinhasDoacoes, DoacaoForm, Transparencia, Notificacoes, CampanhaNecessidades, CandidatosAdmin, AcaoDetalhe } from './paginas/ModulosPage'
+import PerfilPage from './paginas/perfil/PerfilPage'
+import InstituicaoFormPage from './paginas/instituicao/InstituicaoFormPage'
+import { CampanhaListaPage, CampanhaFormPage, CampanhaDetalhePage } from './paginas/campanhas/CampanhasPage'
+import { DoacaoFormPage } from './paginas/doacoes/DoacaoPage'
+import { MinhasCandidaturasPage, CandidatosAdminPage } from './paginas/voluntariado/CandidaturasPage'
+import AcaoDetalhePage from './paginas/acoes/AcaoDetalhePage'
+import { ListaModulo, FormModulo, OportunidadeDetalhe, MinhasDoacoes, Transparencia, Notificacoes, CampanhaNecessidades } from './paginas/ModulosPage'
 
 /**
  * ====================================================================
@@ -39,6 +45,8 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/cadastro" element={<CadastroPage />} />
         <Route path="/necessidades" element={<NecessidadesPublicasPage />} />
+        <Route path="/perfil" element={<RotaProtegida><PerfilPage /></RotaProtegida>} />
+        <Route path="/admin/instituicao" element={<RotaProtegida somenteAdmin><InstituicaoFormPage /></RotaProtegida>} />
 
         {/* ---------- administrativo: categorias (MOLDE) ---------- */}
         <Route path="/admin/categorias"
@@ -57,17 +65,19 @@ export default function App() {
                element={<RotaProtegida somenteAdmin><NecessidadeFormPage /></RotaProtegida>} />
 
         {/* ================= FRENTE 1 - DOACOES ================= */}
-        <Route path="/doar/necessidade/:id" element={<RotaProtegida><DoacaoForm /></RotaProtegida>} />
+        <Route path="/doar/necessidade/:id" element={<RotaProtegida><DoacaoFormPage destino="necessidade" /></RotaProtegida>} />
+        <Route path="/doar/campanha/:id" element={<RotaProtegida><DoacaoFormPage destino="campanha" /></RotaProtegida>} />
         <Route path="/minhas-doacoes" element={<RotaProtegida><MinhasDoacoes /></RotaProtegida>} />
         <Route path="/admin/doacoes" element={<RotaProtegida somenteAdmin><MinhasDoacoes admin /></RotaProtegida>} />
         <Route path="/transparencia" element={<Transparencia />} />
 
         {/* ================= FRENTE 2 - CAMPANHAS ================= */}
-        <Route path="/campanhas" element={<ListaModulo tipo="campanhas" />} />
+        <Route path="/campanhas" element={<CampanhaListaPage />} />
+        <Route path="/campanhas/:id" element={<CampanhaDetalhePage />} />
         <Route path="/comunicados" element={<ListaModulo tipo="comunicados" />} />
-        <Route path="/admin/campanhas" element={<RotaProtegida somenteAdmin><ListaModulo tipo="campanhas" admin /></RotaProtegida>} />
-        <Route path="/admin/campanhas/nova" element={<RotaProtegida somenteAdmin><FormModulo tipo="campanhas" /></RotaProtegida>} />
-        <Route path="/admin/campanhas/:id" element={<RotaProtegida somenteAdmin><FormModulo tipo="campanhas" /></RotaProtegida>} />
+        <Route path="/admin/campanhas" element={<RotaProtegida somenteAdmin><CampanhaListaPage admin /></RotaProtegida>} />
+        <Route path="/admin/campanhas/nova" element={<RotaProtegida somenteAdmin><CampanhaFormPage /></RotaProtegida>} />
+        <Route path="/admin/campanhas/:id" element={<RotaProtegida somenteAdmin><CampanhaFormPage /></RotaProtegida>} />
         <Route path="/admin/campanhas/:id/necessidades" element={<RotaProtegida somenteAdmin><CampanhaNecessidades /></RotaProtegida>} />
         <Route path="/admin/comunicados" element={<RotaProtegida somenteAdmin><ListaModulo tipo="comunicados" admin /></RotaProtegida>} />
         <Route path="/admin/comunicados/nova" element={<RotaProtegida somenteAdmin><FormModulo tipo="comunicados" /></RotaProtegida>} />
@@ -76,20 +86,20 @@ export default function App() {
         {/* ================= FRENTE 3 - VOLUNTARIADO ================= */}
         <Route path="/oportunidades" element={<ListaModulo tipo="oportunidades" />} />
         <Route path="/oportunidades/:id" element={<OportunidadeDetalhe />} />
-        <Route path="/meu-voluntariado" element={<RotaProtegida><MinhasCandidaturas /></RotaProtegida>} />
+        <Route path="/meu-voluntariado" element={<RotaProtegida><MinhasCandidaturasPage /></RotaProtegida>} />
         <Route path="/admin/oportunidades" element={<RotaProtegida somenteAdmin><ListaModulo tipo="oportunidades" admin /></RotaProtegida>} />
         <Route path="/admin/oportunidades/nova" element={<RotaProtegida somenteAdmin><FormModulo tipo="oportunidades" /></RotaProtegida>} />
         <Route path="/admin/oportunidades/:id" element={<RotaProtegida somenteAdmin><FormModulo tipo="oportunidades" /></RotaProtegida>} />
-        <Route path="/admin/oportunidades/:id/candidatos" element={<RotaProtegida somenteAdmin><CandidatosAdmin /></RotaProtegida>} />
+        <Route path="/admin/oportunidades/:id/candidatos" element={<RotaProtegida somenteAdmin><CandidatosAdminPage /></RotaProtegida>} />
 
         {/* ================= FRENTE 4 - ACOES SOCIAIS ================= */}
         <Route path="/acoes" element={<ListaModulo tipo="acoes" />} />
-        <Route path="/acoes/:id" element={<AcaoDetalhe />} />
+        <Route path="/acoes/:id" element={<AcaoDetalhePage />} />
         <Route path="/notificacoes" element={<RotaProtegida><Notificacoes /></RotaProtegida>} />
         <Route path="/admin/acoes" element={<RotaProtegida somenteAdmin><ListaModulo tipo="acoes" admin /></RotaProtegida>} />
         <Route path="/admin/acoes/nova" element={<RotaProtegida somenteAdmin><FormModulo tipo="acoes" /></RotaProtegida>} />
         <Route path="/admin/acoes/:id" element={<RotaProtegida somenteAdmin><FormModulo tipo="acoes" /></RotaProtegida>} />
-        <Route path="/admin/acoes/:id/resultado" element={<RotaProtegida somenteAdmin><AcaoDetalhe admin /></RotaProtegida>} />
+        <Route path="/admin/acoes/:id/resultado" element={<RotaProtegida somenteAdmin><AcaoDetalhePage admin /></RotaProtegida>} />
 
         {/* endereco que nao existe volta para a home */}
         <Route path="*" element={<Navigate to="/" replace />} />

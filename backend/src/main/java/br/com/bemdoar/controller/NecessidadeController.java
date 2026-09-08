@@ -2,11 +2,11 @@ package br.com.bemdoar.controller;
 
 import br.com.bemdoar.dto.NecessidadeRequest;
 import br.com.bemdoar.dto.NecessidadeResponse;
+import br.com.bemdoar.dto.PaginaResponse;
 import br.com.bemdoar.enums.Prioridade;
 import br.com.bemdoar.enums.SituacaoNecessidade;
 import br.com.bemdoar.service.NecessidadeService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,15 +28,15 @@ public class NecessidadeController {
      * PUBLICO (RF07). Todos os parametros sao opcionais.
      */
     @GetMapping
-    public ResponseEntity<Page<NecessidadeResponse>> buscar(
+    public ResponseEntity<PaginaResponse<NecessidadeResponse>> buscar(
             @RequestParam(required = false) String termo,
             @RequestParam(required = false) Long categoriaId,
             @RequestParam(required = false) Prioridade prioridade,
             @RequestParam(required = false) SituacaoNecessidade situacao,
             @RequestParam(defaultValue = "0") int pagina) {
 
-        return ResponseEntity.ok(
-                necessidadeService.buscar(termo, categoriaId, prioridade, situacao, pagina));
+        return ResponseEntity.ok(PaginaResponse.de(
+                necessidadeService.buscar(termo, categoriaId, prioridade, situacao, pagina)));
     }
 
     /** GET /api/necessidades/1 - PUBLICO */

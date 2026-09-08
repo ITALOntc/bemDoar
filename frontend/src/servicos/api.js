@@ -14,7 +14,7 @@
 
 // Se a porta 8080 estiver ocupada na sua maquina, troque aqui
 // E no application.properties do backend. Tem que ser a MESMA.
-export const URL_API = 'http://localhost:8080'
+export const URL_API = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/$/, '')
 
 const CHAVE_TOKEN = 'bemdoar_token'
 

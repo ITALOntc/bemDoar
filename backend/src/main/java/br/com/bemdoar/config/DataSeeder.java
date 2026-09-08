@@ -4,13 +4,26 @@ import br.com.bemdoar.entity.CategoriaNecessidade;
 import br.com.bemdoar.entity.Instituicao;
 import br.com.bemdoar.entity.Necessidade;
 import br.com.bemdoar.entity.Usuario;
+import br.com.bemdoar.entity.Campanha;
+import br.com.bemdoar.entity.OportunidadeVoluntariado;
+import br.com.bemdoar.entity.AcaoSocial;
+import br.com.bemdoar.entity.Comunicado;
 import br.com.bemdoar.enums.PerfilUsuario;
 import br.com.bemdoar.enums.Prioridade;
 import br.com.bemdoar.enums.SituacaoNecessidade;
+import br.com.bemdoar.enums.SituacaoCampanha;
+import br.com.bemdoar.enums.SituacaoOportunidade;
+import br.com.bemdoar.enums.SituacaoAcaoSocial;
+import br.com.bemdoar.enums.SituacaoComunicado;
+import br.com.bemdoar.enums.TipoComunicado;
 import br.com.bemdoar.repository.CategoriaNecessidadeRepository;
 import br.com.bemdoar.repository.InstituicaoRepository;
 import br.com.bemdoar.repository.NecessidadeRepository;
 import br.com.bemdoar.repository.UsuarioRepository;
+import br.com.bemdoar.repository.CampanhaRepository;
+import br.com.bemdoar.repository.OportunidadeVoluntariadoRepository;
+import br.com.bemdoar.repository.AcaoSocialRepository;
+import br.com.bemdoar.repository.ComunicadoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -41,17 +54,29 @@ public class DataSeeder implements CommandLineRunner {
     private final CategoriaNecessidadeRepository categoriaRepository;
     private final NecessidadeRepository necessidadeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CampanhaRepository campanhaRepository;
+    private final OportunidadeVoluntariadoRepository oportunidadeRepository;
+    private final AcaoSocialRepository acaoRepository;
+    private final ComunicadoRepository comunicadoRepository;
 
     public DataSeeder(UsuarioRepository usuarioRepository,
                       InstituicaoRepository instituicaoRepository,
                       CategoriaNecessidadeRepository categoriaRepository,
                       NecessidadeRepository necessidadeRepository,
-                      PasswordEncoder passwordEncoder) {
+                      PasswordEncoder passwordEncoder,
+                      CampanhaRepository campanhaRepository,
+                      OportunidadeVoluntariadoRepository oportunidadeRepository,
+                      AcaoSocialRepository acaoRepository,
+                      ComunicadoRepository comunicadoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.instituicaoRepository = instituicaoRepository;
         this.categoriaRepository = categoriaRepository;
         this.necessidadeRepository = necessidadeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.campanhaRepository = campanhaRepository;
+        this.oportunidadeRepository = oportunidadeRepository;
+        this.acaoRepository = acaoRepository;
+        this.comunicadoRepository = comunicadoRepository;
     }
 
     @Override
@@ -59,6 +84,7 @@ public class DataSeeder implements CommandLineRunner {
         criarUsuarios();
         criarInstituicao();
         criarCategoriasENecessidades();
+        criarDadosDemonstrativos();
     }
 
     private void criarUsuarios() {
@@ -157,5 +183,47 @@ public class DataSeeder implements CommandLineRunner {
         n.setSituacao(SituacaoNecessidade.ABERTA);
         n.setDataCriacao(LocalDateTime.now());
         necessidadeRepository.save(n);
+    }
+
+    private void criarDadosDemonstrativos() {
+        if (campanhaRepository.count() == 0) {
+            Campanha c = new Campanha();
+            c.setTitulo("Campanha de inverno");
+            c.setDescricao("Arrecadacao de cobertores e roupas para os meses mais frios.");
+            c.setObjetivo("Apoiar familias em situacao de vulnerabilidade durante o inverno.");
+            c.setDataInicio(LocalDate.now().minusDays(5));
+            c.setDataFim(LocalDate.now().plusMonths(2));
+            c.setMetaMinima(100);
+            c.setSituacao(SituacaoCampanha.ATIVA);
+            necessidadeRepository.findAll().stream().filter(n -> n.getTitulo().equals("Cobertores")).findFirst()
+                    .ifPresent(n -> c.getNecessidades().add(n));
+            campanhaRepository.save(c);
+        }
+        if (oportunidadeRepository.count() == 0) {
+            OportunidadeVoluntariado o = new OportunidadeVoluntariado();
+            o.setTitulo("Organizacao de doacoes");
+            o.setDescricao("Ajude a separar e organizar os itens recebidos.");
+            o.setAtividade("Triagem de doacoes"); o.setVagas(10);
+            o.setDataAtividade(LocalDate.now().plusWeeks(2)); o.setHorario("09:00 as 13:00");
+            o.setLocal("Sede da Instituicao BemDoar"); o.setIdadeMinima(16);
+            o.setRequisitos("Disposicao para trabalho em equipe."); o.setSituacao(SituacaoOportunidade.ABERTA);
+            oportunidadeRepository.save(o);
+        }
+        if (acaoRepository.count() == 0) {
+            AcaoSocial a = new AcaoSocial();
+            a.setTitulo("Dia da solidariedade"); a.setDescricao("Entrega de kits e atividades para as familias atendidas.");
+            a.setObjetivo("Promover acolhimento e distribuir os itens arrecadados.");
+            a.setDataInicio(LocalDate.now().plusMonths(1)); a.setDataFim(LocalDate.now().plusMonths(1));
+            a.setLocal("Centro comunitario"); a.setPublicoAtendido("Familias cadastradas");
+            a.setEstimativaBeneficiados(80); a.setSituacao(SituacaoAcaoSocial.PLANEJADA);
+            acaoRepository.save(a);
+        }
+        if (comunicadoRepository.count() == 0) {
+            Comunicado c = new Comunicado();
+            c.setTitulo("Bem-vindo ao BemDoar"); c.setConteudo("Acompanhe nossas campanhas, oportunidades e acoes sociais.");
+            c.setTipo(TipoComunicado.PUBLICO); c.setSituacao(SituacaoComunicado.PUBLICADO);
+            c.setDataCriacao(LocalDateTime.now()); c.setDataPublicacao(LocalDateTime.now());
+            comunicadoRepository.save(c);
+        }
     }
 }

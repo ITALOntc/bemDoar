@@ -16,6 +16,8 @@ public interface ParticipacaoVoluntarioRepository extends JpaRepository<Particip
 
     List<ParticipacaoVoluntario> findByCandidaturaUsuarioIdOrderByDataRegistroDesc(Long usuarioId);
 
+    List<ParticipacaoVoluntario> findAllByOrderByDataRegistroDesc();
+
     long countByResultado(ResultadoParticipacao resultado);
 
     /** RF25 - voluntarios DISTINTOS, diferente do total de participacoes. */

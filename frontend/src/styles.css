@@ -44,6 +44,7 @@ a:hover { text-decoration: underline; }
 }
 .cabecalho .marca { font-size: 20px; font-weight: 700; margin-right: 12px; }
 .cabecalho a { color: #fff; font-size: 14px; }
+.cabecalho a.active { font-weight: 700; border-bottom: 2px solid #fff; padding-bottom: 3px; }
 .cabecalho .direita { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 14px; }
 
 /* ---------- estrutura ---------- */
@@ -56,6 +57,9 @@ a:hover { text-decoration: underline; }
   padding: 20px;
   margin-bottom: 16px;
 }
+.grade-cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+.grade-cartoes .cartao { margin-bottom: 0; }
+.imagem-campanha { display: block; width: 100%; max-height: 320px; object-fit: cover; border-radius: 6px; margin-bottom: 16px; }
 
 .titulo-pagina {
   display: flex;
@@ -105,6 +109,9 @@ a:hover { text-decoration: underline; }
 }
 .campo textarea { min-height: 90px; resize: vertical; }
 .acoes-form { display: flex; gap: 10px; margin-top: 18px; }
+.acoes-inline { display: inline-flex; gap: 8px; margin-left: 12px; }
+.acoes-form select { min-width: 220px; padding: 9px; border: 1px solid #cbd2d9; border-radius: 6px; }
+.zona-perigo { border-color: #f5c6c2; }
 
 /* ---------- avisos ---------- */
 .alerta { padding: 11px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 14px; }
@@ -138,3 +145,12 @@ a:hover { text-decoration: underline; }
 
 /* ---------- login ---------- */
 .caixa-login { max-width: 380px; margin: 60px auto; }
+
+@media (max-width: 700px) {
+  .cabecalho { padding: 12px 16px; gap: 12px; }
+  .cabecalho .marca { width: 100%; }
+  .cabecalho .direita { width: 100%; margin-left: 0; }
+  .tabela { display: block; overflow-x: auto; }
+  .acoes-form { align-items: stretch; flex-direction: column; }
+  .acoes-form select { width: 100%; }
+}

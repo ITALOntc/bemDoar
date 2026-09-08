@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { api } from '../servicos/api'
+import { api, URL_API } from '../servicos/api'
 
 const configs = {
   campanhas:{titulo:'Campanhas',api:'/api/campanhas',campos:[['titulo','Titulo'],['descricao','Descricao'],['objetivo','Objetivo'],['dataInicio','Data inicial','date'],['dataFim','Data final','date'],['metaMinima','Meta minima','number']],acoes:['ativar','encerrar','cancelar']},
@@ -12,14 +12,16 @@ const configs = {
 function Aviso({erro,ok}){return <>{erro&&<p className="alerta erro">{erro}</p>}{ok&&<p className="alerta sucesso">{ok}</p>}</>}
 
 export function ListaModulo({tipo,admin=false}){
- const c=configs[tipo], [itens,setItens]=useState([]),[erro,setErro]=useState(''),[ok,setOk]=useState('')
- const carregar=()=>api.get(!admin&&c.publica?c.publica:c.api).then(setItens).catch(e=>setErro(e.message))
+ const c=configs[tipo], [itens,setItens]=useState([]),[erro,setErro]=useState(''),[ok,setOk]=useState(''),[carregando,setCarregando]=useState(true)
+ const carregar=()=>{setCarregando(true);return api.get(!admin&&c.publica?c.publica:c.api).then(setItens).catch(e=>setErro(e.message)).finally(()=>setCarregando(false))}
  useEffect(()=>{carregar()},[tipo,admin])
- async function agir(id,acao){try{let corpo;if(acao==='cancelar'&&tipo==='campanhas')corpo={motivo:prompt('Motivo do cancelamento:')||''};await api.patch(`${c.api}/${id}/${acao}`,corpo);setOk('Operacao realizada.');carregar()}catch(e){setErro(e.message)}}
- return <section><h1>{admin?'Gerir ':''}{c.titulo}</h1><Aviso erro={erro} ok={ok}/>{admin&&<Link className="botao primario" to={`/admin/${tipo}/nova`}>Novo cadastro</Link>}
-  <div className="grade-cartoes">{itens.map(x=><article className="cartao" key={x.id}><h2>{x.titulo}</h2><p>{x.descricao||x.conteudo}</p><p><span className="etiqueta">{x.situacao}</span></p>{x.percentual!=null&&<p>Progresso: {x.percentual}% ({x.recebido}/{x.metaMinima})</p>}{x.livres!=null&&<p>Vagas livres: {x.livres}</p>}
-   {admin&&<div className="acoes"><Link className="botao" to={`/admin/${tipo}/${x.id}`}>Editar</Link>{tipo==='campanhas'&&<Link className="botao" to={`/admin/campanhas/${x.id}/necessidades`}>Necessidades</Link>}{tipo==='oportunidades'&&<Link className="botao" to={`/admin/oportunidades/${x.id}/candidatos`}>Candidatos</Link>}{tipo==='acoes'&&<Link className="botao" to={`/admin/acoes/${x.id}/resultado`}>Resultado</Link>}{c.acoes.map(a=><button className="botao" key={a} onClick={()=>agir(x.id,a)}>{a}</button>)}</div>}
-   {!admin&&tipo==='oportunidades'&&<Link className="botao primario" to={`/oportunidades/${x.id}`}>Ver e candidatar-se</Link>}{!admin&&tipo==='acoes'&&<Link to={`/acoes/${x.id}`}>Ver detalhes</Link>}</article>)}</div></section>
+ const acoesValidas=x=>tipo==='oportunidades'?(x.situacao==='PLANEJADA'?['abrir','encerrar']:x.situacao==='ABERTA'?['encerrar']:[]):tipo==='acoes'?(x.situacao==='PLANEJADA'?['realizar','cancelar']:[]):tipo==='comunicados'?(x.situacao==='PUBLICADO'?['arquivar']:[]):[]
+ async function agir(item,acao){if(!window.confirm(`Deseja realmente ${acao} "${item.titulo}"?`))return;try{await api.patch(`${c.api}/${item.id}/${acao}`);setOk('Operacao realizada.');await carregar()}catch(e){setErro(e.message)}}
+ const vazio={oportunidades:'Nenhuma oportunidade disponivel.',acoes:'Nenhuma acao social disponivel.',comunicados:'Nenhum comunicado publicado.'}[tipo]||'Nenhum registro encontrado.'
+ return <section><div className="titulo-pagina"><h1>{admin?'Gerir ':''}{c.titulo}</h1>{admin&&<Link className="botao primario" to={`/admin/${tipo}/nova`}>Novo cadastro</Link>}</div><Aviso erro={erro} ok={ok}/>
+  {carregando?<div className="vazio">Carregando...</div>:itens.length===0?<div className="vazio">{vazio}</div>:<div className="grade-cartoes">{itens.map(x=><article className="cartao" key={x.id}><h2>{x.titulo}</h2><p>{x.descricao||x.conteudo}</p><p><span className="etiqueta">{x.situacao}</span></p>{x.livres!=null&&<p>Vagas livres: {x.livres}</p>}
+   {admin&&<div className="acoes-form"><Link className="botao" to={`/admin/${tipo}/${x.id}`}>Editar</Link>{tipo==='oportunidades'&&<Link className="botao" to={`/admin/oportunidades/${x.id}/candidatos`}>Candidatos</Link>}{tipo==='acoes'&&<Link className="botao" to={`/admin/acoes/${x.id}/resultado`}>Resultado e vinculos</Link>}{acoesValidas(x).map(a=><button className={a==='cancelar'?'botao perigo':'botao'} key={a} onClick={()=>agir(x,a)}>{a}</button>)}</div>}
+   {!admin&&tipo==='oportunidades'&&<Link className="botao primario" to={`/oportunidades/${x.id}`}>Ver e candidatar-se</Link>}{!admin&&tipo==='acoes'&&<Link className="botao" to={`/acoes/${x.id}`}>Ver detalhes</Link>}</article>)}</div>}</section>
 }
 
 export function FormModulo({tipo}){

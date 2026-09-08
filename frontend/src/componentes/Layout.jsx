@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { usuarioLogado, sair, ehAdministrador } from '../servicos/auth'
 
 /**
@@ -26,25 +26,27 @@ export default function Layout({ children }) {
         <span className="marca">BemDoar</span>
 
         {/* ---------- publico (todo mundo ve) ---------- */}
-        <Link to="/">Inicio</Link>
-        <Link to="/necessidades">Necessidades</Link>
-        <Link to="/campanhas">Campanhas</Link>
-        <Link to="/oportunidades">Voluntariado</Link>
-        <Link to="/acoes">Acoes sociais</Link>
-        <Link to="/comunicados">Comunicados</Link>
-        <Link to="/transparencia">Transparencia</Link>
+        <NavLink to="/" end>Inicio</NavLink>
+        <NavLink to="/necessidades">Necessidades</NavLink>
+        <NavLink to="/campanhas">Campanhas</NavLink>
+        <NavLink to="/oportunidades">Voluntariado</NavLink>
+        <NavLink to="/acoes">Acoes sociais</NavLink>
+        <NavLink to="/comunicados">Comunicados</NavLink>
+        <NavLink to="/transparencia">Transparencia</NavLink>
 
         {/* ---------- area administrativa ---------- */}
-        {admin && <Link to="/admin/categorias">Categorias</Link>}
-        {admin && <Link to="/admin/necessidades">Gerir necessidades</Link>}
-        {admin && <Link to="/admin/doacoes">Gerir doacoes</Link>}
-        {admin && <Link to="/admin/campanhas">Gerir campanhas</Link>}
-        {admin && <Link to="/admin/oportunidades">Gerir voluntariado</Link>}
-        {admin && <Link to="/admin/acoes">Gerir acoes</Link>}
-        {admin && <Link to="/admin/comunicados">Gerir comunicados</Link>}
-        {usuario && !admin && <Link to="/minhas-doacoes">Minhas doacoes</Link>}
-        {usuario && !admin && <Link to="/meu-voluntariado">Meu voluntariado</Link>}
-        {usuario && <Link to="/notificacoes">Notificacoes</Link>}
+        {admin && <NavLink to="/admin/categorias">Categorias</NavLink>}
+        {admin && <NavLink to="/admin/instituicao">Instituicao</NavLink>}
+        {admin && <NavLink to="/admin/necessidades">Gerir necessidades</NavLink>}
+        {admin && <NavLink to="/admin/doacoes">Gerir doacoes</NavLink>}
+        {admin && <NavLink to="/admin/campanhas">Gerir campanhas</NavLink>}
+        {admin && <NavLink to="/admin/oportunidades">Gerir voluntariado</NavLink>}
+        {admin && <NavLink to="/admin/acoes">Gerir acoes</NavLink>}
+        {admin && <NavLink to="/admin/comunicados">Gerir comunicados</NavLink>}
+        {usuario && !admin && <NavLink to="/minhas-doacoes">Minhas doacoes</NavLink>}
+        {usuario && !admin && <NavLink to="/meu-voluntariado">Meu voluntariado</NavLink>}
+        {usuario && <NavLink to="/notificacoes">Notificacoes</NavLink>}
+        {usuario && <NavLink to="/perfil">Meu perfil</NavLink>}
 
         <span className="direita">
           {usuario ? (
