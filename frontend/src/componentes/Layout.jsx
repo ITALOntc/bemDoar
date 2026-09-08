@@ -28,17 +28,23 @@ export default function Layout({ children }) {
         {/* ---------- publico (todo mundo ve) ---------- */}
         <Link to="/">Inicio</Link>
         <Link to="/necessidades">Necessidades</Link>
-        {/* FRENTE 2 - adicione aqui: <Link to="/campanhas">Campanhas</Link> */}
-        {/* FRENTE 3 - adicione aqui: <Link to="/oportunidades">Voluntariado</Link> */}
-        {/* FRENTE 4 - adicione aqui: <Link to="/acoes">Acoes sociais</Link> */}
+        <Link to="/campanhas">Campanhas</Link>
+        <Link to="/oportunidades">Voluntariado</Link>
+        <Link to="/acoes">Acoes sociais</Link>
+        <Link to="/comunicados">Comunicados</Link>
+        <Link to="/transparencia">Transparencia</Link>
 
         {/* ---------- area administrativa ---------- */}
         {admin && <Link to="/admin/categorias">Categorias</Link>}
         {admin && <Link to="/admin/necessidades">Gerir necessidades</Link>}
-        {/* FRENTE 1 - adicione aqui: <Link to="/admin/doacoes">Gerir doacoes</Link> */}
-        {/* FRENTE 2 - adicione aqui: <Link to="/admin/campanhas">Gerir campanhas</Link> */}
-        {/* FRENTE 3 - adicione aqui: <Link to="/admin/oportunidades">Gerir voluntariado</Link> */}
-        {/* FRENTE 4 - adicione aqui: <Link to="/admin/acoes">Gerir acoes</Link> */}
+        {admin && <Link to="/admin/doacoes">Gerir doacoes</Link>}
+        {admin && <Link to="/admin/campanhas">Gerir campanhas</Link>}
+        {admin && <Link to="/admin/oportunidades">Gerir voluntariado</Link>}
+        {admin && <Link to="/admin/acoes">Gerir acoes</Link>}
+        {admin && <Link to="/admin/comunicados">Gerir comunicados</Link>}
+        {usuario && !admin && <Link to="/minhas-doacoes">Minhas doacoes</Link>}
+        {usuario && !admin && <Link to="/meu-voluntariado">Meu voluntariado</Link>}
+        {usuario && <Link to="/notificacoes">Notificacoes</Link>}
 
         <span className="direita">
           {usuario ? (

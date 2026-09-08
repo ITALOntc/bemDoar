@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import br.com.bemdoar.dto.NotificacaoResponse;
+import br.com.bemdoar.exception.RecursoNaoEncontradoException;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * RF27 - LADO DA CRIACAO das notificacoes.
@@ -70,5 +74,20 @@ public class NotificacaoService {
         usuarioRepository
                 .findByPerfilAndAtivoTrue(br.com.bemdoar.enums.PerfilUsuario.USUARIO)
                 .forEach(usuario -> notificar(usuario.getId(), mensagem));
+    }
+
+    @Transactional(readOnly = true)
+    public List<NotificacaoResponse> listarMinhas(Long usuarioId) {
+        return notificacaoRepository.findByUsuarioIdOrderByDataCriacaoDesc(usuarioId)
+                .stream().map(NotificacaoResponse::de).toList();
+    }
+
+    @Transactional
+    public NotificacaoResponse marcarComoLida(Long id, Long usuarioId) {
+        Notificacao n = notificacaoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Notificacao nao encontrada."));
+        if (!n.getUsuario().getId().equals(usuarioId)) throw new AccessDeniedException("Sem permissao");
+        n.setEstado(EstadoNotificacao.LIDA);
+        return NotificacaoResponse.de(notificacaoRepository.save(n));
     }
 }

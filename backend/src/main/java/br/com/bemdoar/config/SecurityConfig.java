@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // ---------- login e cadastro (RF01, RF02) ----------
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/cadastro", "/api/auth/login").permitAll()
 
                 // ---------- AREAS PUBLICAS (documento, item 2.2) ----------
                 .requestMatchers(HttpMethod.GET, "/api/instituicao").permitAll()

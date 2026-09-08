@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../../servicos/api'
+import { Link } from 'react-router-dom'
 
 /**
  * RF07 - lista publica com busca e filtros. Nao exige login.
@@ -92,7 +93,7 @@ export default function NecessidadesPublicasPage() {
             <thead>
               <tr>
                 <th>Titulo</th><th>Categoria</th><th>Prioridade</th>
-                <th>Progresso</th><th>Situacao</th>
+                <th>Progresso</th><th>Situacao</th><th></th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +109,7 @@ export default function NecessidadesPublicasPage() {
                     <small>{n.quantidadeRecebida} / {n.quantidadeNecessaria} ({n.percentual}%)</small>
                   </td>
                   <td><span className="etiqueta">{n.situacao}</span></td>
+                  <td>{n.situacao !== 'ENCERRADA' && <Link className="botao primario" to={`/doar/necessidade/${n.id}`}>Doar</Link>}</td>
                 </tr>
               ))}
             </tbody>
